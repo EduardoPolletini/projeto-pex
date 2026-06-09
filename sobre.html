@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre - Projeto PEX</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* === ESTILIZAÇÃO BASE === */
+        body {
+            background-color: #011a30; 
+            color: #ffffff;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='0.5'%3E%3Cpath d='M3 14h18l-3 4H6z'/%3E%3Cpath d='M12 14V6l4 4-4 4'/%3E%3C/svg%3E");
+            background-size: 150px 150px;
+            opacity: 0.03; 
+            z-index: -1;
+            pointer-events: none; 
+        }
+
+        /* === CABEÇALHO === */
+        header {
+            display: flex;
+            align-items: center;
+            padding: 20px 30px;
+            background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0) 100%);
+        }
+
+        /* Botão posicionado à esquerda */
+        .btn-voltar {
+            background-color: #ffffff;
+            color: #011a30;
+            text-decoration: none;
+            padding: 10px 24px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            margin-right: 25px; /* Empurra a logo para a direita */
+            display: inline-block;
+        }
+
+        .btn-voltar:hover {
+            transform: translateX(-3px); /* Animação apontando para a esquerda */
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            background-color: #f0f0f0;
+        }
+
+        /* Formatação da Logo recuperada */
+        .app-logo {
+            height: 55px; 
+            width: auto;  
+            margin-right: 20px;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+
+        .title {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        /* === CORPO PRINCIPAL === */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* === SEÇÃO DE RESUMO === */
+        .summary-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 50px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            width: 100%;
+        }
+
+        .summary-section h1 {
+            color: #ba0901;
+            margin-top: 0;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .summary-section p {
+            line-height: 1.8;
+            color: #cccccc;
+            font-size: 16px;
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        /* === CARROSSEL DA EQUIPE === */
+        .team-section {
+            width: 100%;
+            position: relative;
+        }
+
+        .team-section h2 {
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+        }
+
+        .carousel-wrapper {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .carousel-btn {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .carousel-btn:hover {
+            background-color: #ba0901;
+            color: #011a30;
+            transform: scale(1.1);
+            border-color: #ba0901;
+        }
+
+        .carousel-track-container {
+            flex: 1;
+            overflow: hidden;
+            margin: 0 15px;
+        }
+
+        .carousel-track {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scroll-snap-type: x mandatory;
+            padding-bottom: 15px;
+        }
+
+        .carousel-track::-webkit-scrollbar {
+            height: 8px;
+        }
+        .carousel-track::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        .carousel-track::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        .team-card {
+            min-width: 280px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 30px 20px;
+            text-align: center;
+            scroll-snap-align: start;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .team-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .team-card img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #ba0901;
+            margin-bottom: 15px;
+            padding: 3px;
+        }
+
+        .team-card h3 {
+            margin: 10px 0 5px 0;
+            font-size: 18px;
+            color: #ffffff;
+        }
+
+        .team-card h4 {
+            margin: 0 0 15px 0;
+            font-size: 14px;
+            font-weight: 300;
+            color: #ba0901;
+            text-transform: uppercase;
+        }
+
+        .team-card p {
+            font-size: 13px;
+            color: #aaaaaa;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        /* === SEÇÃO DE CONTATO === */
+        .contact-section {
+            width: 100%;
+            margin-top: 60px;
+            text-align: center;
+        }
+
+        .contact-section h2 {
+            font-weight: 600;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+        }
+
+        .contact-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .contact-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 20px 30px;
+            min-width: 250px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .contact-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .contact-name {
+            display: block;
+            font-size: 16px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .contact-email {
+            color: #ba0901;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .contact-email:hover {
+            color: #ff4d4d;
+            text-decoration: underline;
+        }
+
+        /* === FOOTER === */
+        footer {
+            margin-top: auto; 
+            padding: 20px;
+            text-align: center;
+            background: linear-gradient(0deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 100%);
+            font-size: 12px;
+            color: #888888;
+        }
+        footer p { margin: 4px 0; letter-spacing: 0.5px; }
+        .highlight-thanks { color: #aaaaaa; font-style: italic; }
+
+        @media (max-width: 768px) {
+            .carousel-btn { display: none; } 
+            .team-card { min-width: 85%; scroll-snap-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="btn-voltar">← Voltar</a>
+        <img src="img/LogoProjeto.png" alt="Logo Projeto PEX" class="app-logo">
+        <div class="title">PROJETO PEX - DEMONSTRAÇÃO</div>
+    </header>
+
+    <main>
+        <section class="summary-section">
+            <h1>Visão Geral do Projeto</h1>
+            <p>
+                Este projeto visa desenvolver um protótipo funcional de monitoramento aquático, utilizando tecnologias de IoT e processamento em nuvem. O objetivo central é extrair e analisar o calado de embarcações que trafegam na região amazônica de forma semiautomática e em tempo real, contribuindo para o controle de peso e a segurança da navegação nos rios.
+            </p>
+            <p>
+                A arquitetura do sistema integra a captação de imagens através de dispositivos de borda, o envio dessas informações para uma infraestrutura robusta no Google Cloud Platform e o processamento inteligente via visão computacional. O resultado é disponibilizado instantaneamente nesta interface web responsiva e descentralizada, garantindo controle e auditoria.
+            </p>
+        </section>
+
+        <section class="team-section">
+            <h2>Nossa Equipe</h2>
+            
+            <div class="carousel-wrapper">
+                <button class="carousel-btn" id="btn-prev">❮</button>
+                
+                <div class="carousel-track-container">
+                    <div class="carousel-track" id="team-carousel">
+                        </div>
+                </div>
+
+                <button class="carousel-btn" id="btn-next">❯</button>
+            </div>
+        </section>
+
+        <section class="contact-section">
+            <h2>Entre em Contato</h2>
+            <div class="contact-container" id="contact-container">
+                </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Faculdade Matias Machline - Projeto PEX</p>
+        <p class="highlight-thanks">Um agradecimento especial ao Professor Dario pelo acompanhamento e orientação na construção deste projeto.</p>
+    </footer>
+
+    <script>
+        const membrosEquipe = [
+            {
+                nome: "Eduardo Polletini",
+                cargo: "Product Owner (PO)",
+                descricao: "Responsável pelo gerenciamento do backlog, aplicação de metodologias ágeis (Scrum/Kanban) e alinhamento do protótipo com os requisitos do projeto.",
+                foto: "img/Eduardo.jpeg",
+                email: "eduardo.216481@fmm.org.br"
+            },
+            {
+                nome: "Anayad Dayane",
+                cargo: "Scrum Master",
+                descricao: "Atua na integração de hardware, configuração de dispositivos para comunicação com a nuvem e na organização das reuniões.",
+                foto: "img/Anayad.jpeg",
+                email: "anayad.216425@fmm.org.br"
+            },
+            {
+                nome: "Carlos Eder",
+                cargo: "Arquiteto de Software / Designer",
+                descricao: "Desenvolve a arquitetura de sistemas e infraestrutura Cloud, garantindo a comunicação segura através de padrões modernos.",
+                foto: "img/Carlos.jpeg",
+                email: "carlos.170075@fmm.org.br"
+            },
+            {
+                nome: "Guilherme Santana",
+                cargo: "Programador",
+                descricao: "Focado no processamento de imagens e na extração automatizada da métrica do calado das embarcações amazônicas.",
+                foto: "img/Guilherme.jpeg",
+                email: "guilherme.239833@fmm.org.br"
+            },
+            {
+                nome: "João Paulo",
+                cargo: "Analista de Qualidade / DevOps",
+                descricao: "Responsável pela execução de testes de software e suporte para as implementações.",
+                foto: "img/JP.jpeg",
+                email: "joao.216412@fmm.org.br"
+            }
+        ];
+
+        const track = document.getElementById('team-carousel');
+        const contactContainer = document.getElementById('contact-container');
+
+        membrosEquipe.forEach(membro => {
+            // Renderiza o card do carrossel
+            const cardHTML = `
+                <div class="team-card">
+                    <img src="${membro.foto}" alt="Foto de ${membro.nome}">
+                    <h3>${membro.nome}</h3>
+                    <h4>${membro.cargo}</h4>
+                    <p>${membro.descricao}</p>
+                </div>
+            `;
+            track.innerHTML += cardHTML;
+
+            // Renderiza o card de contato
+            const contactHTML = `
+                <div class="contact-card">
+                    <span class="contact-name">${membro.nome}</span>
+                    <a href="mailto:${membro.email}" class="contact-email">${membro.email}</a>
+                </div>
+            `;
+            contactContainer.innerHTML += contactHTML;
+        });
+
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+
+        btnNext.addEventListener('click', () => {
+            track.scrollBy({ left: 320, behavior: 'smooth' });
+        });
+
+        btnPrev.addEventListener('click', () => {
+            track.scrollBy({ left: -320, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
