@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Projeto PEX</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* === ESTILIZAÇÃO BASE === */
+        body {
+            background-color: #011a30; 
+            color: #ffffff;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='0.5'%3E%3Cpath d='M3 14h18l-3 4H6z'/%3E%3Cpath d='M12 14V6l4 4-4 4'/%3E%3C/svg%3E");
+            background-size: 150px 150px;
+            opacity: 0.03; 
+            z-index: -1;
+            pointer-events: none; 
+        }
+
+        /* === CABEÇALHO === */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; 
+            padding: 20px 30px;
+            background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0) 100%);
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .app-logo {
+            height: 55px; 
+            width: auto;  
+            object-fit: contain;
+            flex-shrink: 0; 
+            border-radius: 10px;
+        }
+
+        .title {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            white-space: nowrap; 
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 15px;
+            flex-shrink: 0;
+        }
+
+        .btn-nav {
+            background-color: #ffffff;
+            color: #011a30;
+            text-decoration: none;
+            padding: 10px 24px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn-nav:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            background-color: #f0f0f0;
+        }
+
+        /* === CORPO PRINCIPAL - DASHBOARD === */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            max-width: 1400px; 
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .dashboard-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 15px;
+        }
+
+        .dashboard-header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+            color: #00e676;
+            letter-spacing: 1px;
+        }
+
+        .last-update {
+            font-size: 12px;
+            color: #aaaaaa;
+        }
+
+        /* === CARDS E CONTAINERS (GLASSMORPHISM) === */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: #ffffff;
+            opacity: 0.8;
+        }
+        
+        .accent-blue::before { background: #2196F3; }
+        .accent-green::before { background: #00e676; }
+        .accent-warning::before { background: #ff9800; }
+        .accent-danger::before { background: #f44336; }
+
+        .card-header {
+            padding: 20px 25px 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: #cccccc;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        /* === GRID DE KPIs === */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            width: 100%;
+            margin-bottom: 25px;
+        }
+
+        .kpi-card {
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.3s ease;
+        }
+
+        .kpi-card:hover { transform: translateY(-3px); }
+
+        .kpi-value {
+            font-size: 48px;
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+
+        .kpi-value span {
+            font-size: 20px;
+            font-weight: 400;
+            color: #aaaaaa;
+        }
+
+        .kpi-subtitle { font-size: 13px; color: #888888; }
+
+        /* Cores de Alerta */
+        .status-normal { color: #00e676 !important; }
+        .status-warning { color: #ff9800 !important; }
+        .status-danger { color: #f44336 !important; }
+
+        /* === GRID PRINCIPAL (GRÁFICO E TABELA) === */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+            width: 100%;
+        }
+
+        .chart-container {
+            padding: 0 25px 25px 25px;
+            height: 350px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* === TABELA DE HISTÓRICO === */
+        .table-container {
+            padding: 0 20px 20px 20px;
+            overflow-x: auto;
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
+        .table-container::-webkit-scrollbar { width: 6px; }
+        .table-container::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+        .table-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        th {
+            color: #aaaaaa;
+            font-weight: 600;
+            padding: 12px 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: sticky;
+            top: 0;
+            background: rgba(1, 26, 48, 0.95);
+            z-index: 2;
+        }
+
+        td {
+            padding: 12px 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            color: #ffffff;
+        }
+
+        tr:hover td { background: rgba(255,255,255,0.03); }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #011a30;
+        }
+
+        .bg-normal { background-color: #00e676; }
+        .bg-warning { background-color: #ff9800; }
+        .bg-danger { background-color: #f44336; color: #ffffff; }
+
+        /* === FOOTER === */
+        footer {
+            margin-top: auto; 
+            padding: 20px;
+            text-align: center;
+            background: linear-gradient(0deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 100%);
+            font-size: 12px;
+            color: #888888;
+        }
+
+        /* === RESPONSIVIDADE === */
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                padding: 15px;
+                gap: 15px;
+                text-align: center;
+            }
+            .header-brand { flex-direction: column; gap: 10px; }
+            .app-logo { height: 50px; }
+            .title { font-size: 16px; white-space: normal; }
+            .header-nav { width: 100%; justify-content: center; gap: 10px; }
+            .btn-nav { padding: 8px 16px; font-size: 11px; }
+            .dashboard-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-brand">
+            <img src="img/LogoProjeto.png" alt="Logo Projeto PEX" class="app-logo" onerror="this.src='https://via.placeholder.com/150x50/ffffff/011a30?text=Logo'">
+            <div class="title">PROJETO PEX - DEMONSTRAÇÃO</div>
+        </div>
+        <div class="header-nav">
+            <a href="index.html" class="btn-nav">App de Leitura</a>
+            <a href="sobre.html" class="btn-nav">Sobre o Projeto</a>
+        </div>
+    </header>
+
+    <main>
+        <div class="dashboard-header">
+            <h1>Painel de Operações</h1>
+            <div class="last-update" id="lbl-update">Aguardando dados da nuvem...</div>
+        </div>
+
+        <div class="kpi-grid">
+            <div class="glass-card kpi-card accent-blue">
+                <div class="card-header" style="padding:0; margin-bottom:15px;">Total de Leituras</div>
+                <div class="kpi-value" id="val-total">0</div>
+                <div class="kpi-subtitle">Registros processados pelo D001</div>
+            </div>
+
+            <div class="glass-card kpi-card accent-blue">
+                <div class="card-header" style="padding:0; margin-bottom:15px;">Média do Calado</div>
+                <div class="kpi-value" id="val-media">0.0<span>m</span></div>
+                <div class="kpi-subtitle">Baseado no histórico em metros</div>
+            </div>
+
+            <div class="glass-card kpi-card" id="card-alerta">
+                <div class="card-header" style="padding:0; margin-bottom:15px;">Status Atual</div>
+                <div class="kpi-value" id="val-status">--</div>
+                <div class="kpi-subtitle" id="lbl-status-desc">Monitoramento Operacional</div>
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <div class="glass-card accent-blue">
+                <div class="card-header">Tendência do Calado (Escala em Metros)</div>
+                <div class="chart-container">
+                    <canvas id="draftChart"></canvas>
+                </div>
+            </div>
+
+            <div class="glass-card accent-blue">
+                <div class="card-header">Últimas Leituras</div>
+                <div class="table-container">
+                    <table id="history-table">
+                        <thead>
+                            <tr>
+                                <th>Horário</th>
+                                <th>Leitura Bruta</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Faculdade Matias Machline - Projeto PEX</p>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCksZLf4pXjUW2dBp9dcnQk6eEImqkFGGE",
+            authDomain: "aquavision-94b0a.firebaseapp.com",
+            databaseURL: "https://aquavision-94b0a-default-rtdb.firebaseio.com",
+            projectId: "aquavision-94b0a",
+            storageBucket: "aquavision-94b0a.firebasestorage.app",
+            messagingSenderId: "350037089938",
+            appId: "1:350037089938:web:3fb921ccc8f7f07c21d04b",
+            measurementId: "G-TSY2R7R77C"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const elTotal = document.getElementById('val-total');
+        const elMedia = document.getElementById('val-media');
+        const elStatus = document.getElementById('val-status');
+        const elStatusDesc = document.getElementById('lbl-status-desc');
+        const cardAlerta = document.getElementById('card-alerta');
+        const lblUpdate = document.getElementById('lbl-update');
+        const tableBody = document.getElementById('table-body');
+
+        // Limites Operacionais baseados na escala em METROS
+        const LIMITE_ATENCAO = 7.5;
+        const LIMITE_PERIGO = 8.0;
+
+        // --- INICIALIZAÇÃO DO GRÁFICO (Chart.js) ---
+        const ctx = document.getElementById('draftChart').getContext('2d');
+        const draftChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Calado (m)',
+                    data: [], 
+                    borderColor: '#00e676',
+                    backgroundColor: 'rgba(0, 230, 118, 0.1)',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#ffffff',
+                    pointBorderColor: '#00e676',
+                    pointRadius: 4,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                        ticks: { color: '#aaaaaa' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#aaaaaa' }
+                    }
+                }
+            }
+        });
+
+        function avaliarStatus(valorMetros) {
+            if (valorMetros >= LIMITE_PERIGO) return { texto: 'Perigo', classeBDG: 'bg-danger', classeTXT: 'status-danger', classeCRD: 'accent-danger' };
+            if (valorMetros >= LIMITE_ATENCAO) return { texto: 'Atenção', classeBDG: 'bg-warning', classeTXT: 'status-warning', classeCRD: 'accent-warning' };
+            return { texto: 'Normal', classeBDG: 'bg-normal', classeTXT: 'status-normal', classeCRD: 'accent-green' };
+        }
+
+        // --- ESCUTA O BANCO DE DADOS EM TEMPO REAL ---
+        const leiturasRef = collection(db, "Dispositivos", "D001", "leituras");
+        
+        onSnapshot(leiturasRef, (snapshot) => {
+            let dadosProcessados = [];
+            let somaMetros = 0;
+
+            // 1. Coleta e converte os dados
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                if (data.menor_leitura !== undefined && data.menor_leitura !== null) {
+                    const valorBruto = parseFloat(data.menor_leitura);
+                    
+                    // Lógica principal de conversão
+                    const unidadeRaw = valorBruto >= 10 ? 'dm' : 'm';
+                    const valorEmMetros = valorBruto >= 10 ? valorBruto / 10 : valorBruto;
+                    
+                    let timestamp = 0;
+                    if (data.file) {
+                        const match = data.file.match(/\d+/); 
+                        if (match) timestamp = parseInt(match[0]);
+                    }
+                    
+                    somaMetros += valorEmMetros;
+                    dadosProcessados.push({ 
+                        raw: valorBruto,
+                        unidade: unidadeRaw,
+                        valor_m: valorEmMetros, 
+                        time: timestamp 
+                    });
+                }
+            });
+
+            // 2. Ordena os dados cronologicamente
+            dadosProcessados.sort((a, b) => a.time - b.time);
+
+            const total = dadosProcessados.length;
+            
+            if (total > 0) {
+                // Atualiza KPIs
+                elTotal.innerText = total;
+                elMedia.innerHTML = `${(somaMetros / total).toFixed(2)}<span>m</span>`;
+
+                const ultimoDado = dadosProcessados[dadosProcessados.length - 1];
+                const statusAnalise = avaliarStatus(ultimoDado.valor_m);
+
+                elStatus.innerText = statusAnalise.texto.toUpperCase();
+                elStatus.className = `kpi-value ${statusAnalise.classeTXT}`;
+                cardAlerta.className = `glass-card kpi-card ${statusAnalise.classeCRD}`;
+
+                if (ultimoDado.valor_m >= LIMITE_PERIGO) elStatusDesc.innerText = `Calado (${ultimoDado.valor_m.toFixed(2)}m) excedeu o limite!`;
+                else if (ultimoDado.valor_m >= LIMITE_ATENCAO) elStatusDesc.innerText = `Calado (${ultimoDado.valor_m.toFixed(2)}m) próximo ao limite.`;
+                else elStatusDesc.innerText = `Calado (${ultimoDado.valor_m.toFixed(2)}m) dentro da margem de segurança.`;
+
+                // 3. Atualiza o Gráfico (sempre utilizando os metros calculados)
+                const limiteGrafico = dadosProcessados.slice(-20);
+                draftChart.data.labels = limiteGrafico.map(d => {
+                    if(d.time === 0) return "--:--";
+                    const dataObj = new Date(d.time);
+                    return `${dataObj.getHours().toString().padStart(2,'0')}:${dataObj.getMinutes().toString().padStart(2,'0')}`;
+                });
+                draftChart.data.datasets[0].data = limiteGrafico.map(d => d.valor_m);
+                
+                if (ultimoDado.valor_m >= LIMITE_PERIGO) {
+                    draftChart.data.datasets[0].borderColor = '#f44336';
+                    draftChart.data.datasets[0].backgroundColor = 'rgba(244, 67, 54, 0.1)';
+                    draftChart.data.datasets[0].pointBorderColor = '#f44336';
+                } else {
+                    draftChart.data.datasets[0].borderColor = '#00e676';
+                    draftChart.data.datasets[0].backgroundColor = 'rgba(0, 230, 118, 0.1)';
+                    draftChart.data.datasets[0].pointBorderColor = '#00e676';
+                }
+                draftChart.update();
+
+                // 4. Atualiza a Tabela de Histórico exibindo a unidade original dinamicamente
+                tableBody.innerHTML = ''; 
+                
+                const historicoTabela = [...dadosProcessados].slice(-50).reverse();
+                
+                historicoTabela.forEach(item => {
+                    let horarioStr = "--:--:--";
+                    if(item.time !== 0) {
+                        const d = new Date(item.time);
+                        horarioStr = `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}:${d.getSeconds().toString().padStart(2,'0')}`;
+                    }
+
+                    const st = avaliarStatus(item.valor_m);
+                    
+                    // Exibe "78 dm", ou "7.8 m" caso seja lido bruto
+                    const row = `
+                        <tr>
+                            <td>${horarioStr}</td>
+                            <td><strong>${item.raw} ${item.unidade}</strong> <span style="color:#888; font-size:11px;">(${item.valor_m.toFixed(2)}m)</span></td>
+                            <td><span class="badge ${st.classeBDG}">${st.texto}</span></td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                });
+            }
+
+            const agora = new Date();
+            lblUpdate.innerText = `Sincronizado: ${agora.toLocaleTimeString()}`;
+        });
+
+    </script>
+</body>
+</html>
