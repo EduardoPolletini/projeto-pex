@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projeto PEX - Demonstração</title>
+    
+    <!-- Importando a fonte moderna Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* === ESTILIZAÇÃO E RESPONSIVIDADE === */
+        body {
+            /* Fundo azul mais escuro */
+            background-color: #011a30; 
+            color: #ffffff;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Padrão de fundo com barquinhos (SVG transparente) */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            /* SVG codificado na URL (Barquinho a vela simples) */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='0.5'%3E%3Cpath d='M3 14h18l-3 4H6z'/%3E%3Cpath d='M12 14V6l4 4-4 4'/%3E%3C/svg%3E");
+            background-size: 150px 150px;
+            opacity: 0.03; /* Transparência bem baixa para não poluir */
+            z-index: -1;
+            pointer-events: none; /* Garante que não interfira nos cliques */
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            padding: 20px 30px;
+            background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0) 100%);
+        }
+
+        /* Estilo para a imagem da logo */
+        .app-logo {
+            height: 55px; /* Define a altura da logo */
+            width: auto;  /* Mantém a proporção original */
+            margin-right: 20px;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+
+        .title {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        button {
+            background-color: #ffffff;
+            color: #011a30;
+            border: none;
+            padding: 16px 40px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 50px; /* Bordas mais arredondadas (moderno) */
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.5);
+            background-color: #f0f0f0;
+        }
+
+        button:disabled {
+            background-color: #555555;
+            color: #aaaaaa;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        #camera-section {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        video {
+            width: 100%;
+            border-radius: 16px;
+            background-color: #000;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+
+        #result-section {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px); /* Efeito glassmorphism */
+            -webkit-backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+
+        #result-section h3 {
+            margin-top: 0;
+            font-weight: 300;
+            color: #cccccc;
+        }
+
+        .draft-value {
+            font-size: 56px;
+            font-weight: 600;
+            color: #00e676; /* Verde neon para contraste moderno */
+            margin: 10px 0;
+            text-shadow: 0 0 20px rgba(0, 230, 118, 0.4);
+        }
+
+        .loader {
+            display: none;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid #00e676;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <!-- CABEÇALHO -->
+    <header>
+        <!-- EXEMPLO DE COMO COLOCAR A LOGO: 
+             Substitua "caminho/para/sua/logo.png" pela URL ou caminho local da sua imagem.
+             Se a logo estiver na mesma pasta do arquivo HTML, ficará apenas src="logo.png" -->
+        <img src="img/LogoProjeto.png" alt="Logo Projeto PEX" class="app-logo">
+        
+        <div class="title">PROJETO PEX - DEMONSTRAÇÃO</div>
+    </header>
+
+    <!-- ÁREA PRINCIPAL -->
+    <main>
+        <!-- Botão Inicial -->
+        <button id="btn-start">Registrar Calado</button>
+
+        <!-- Seção da Câmera -->
+        <div id="camera-section">
+            <video id="video-feed" autoplay playsinline></video>
+            <button id="btn-capture">Tirar Foto e Enviar</button>
+            <div class="loader" id="loading-spinner"></div>
+            <p id="status-text" style="text-align: center; font-size: 14px; font-weight: 300;"></p>
+        </div>
+
+        <canvas id="canvas" style="display: none;"></canvas>
+
+        <!-- Seção de Resultado -->
+        <div id="result-section">
+            <h3>Leitura do Calado:</h3>
+            <div class="draft-value" id="draft-display">-- m</div>
+            <button id="btn-reset" style="font-size: 14px; padding: 12px 25px; margin-top: 25px;">Nova Leitura</button>
+        </div>
+    </main>
+
+    <!-- === LÓGICA E INTEGRAÇÃO FIREBASE === -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getStorage, ref, uploadBytes } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-storage.js";
+        import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        // =========================================================================
+        // 1. CONFIGURAÇÕES DO FIREBASE (INSIRA SUAS CHAVES AQUI)
+        // =========================================================================
+        const firebaseConfig = {
+            apiKey: "SUA_API_KEY_AQUI",
+            authDomain: "SEU_AUTH_DOMAIN_AQUI",
+            projectId: "SEU_PROJECT_ID_AQUI",
+            storageBucket: "SEU_STORAGE_BUCKET_AQUI",
+            messagingSenderId: "SEU_MESSAGING_SENDER_AQUI",
+            appId: "SEU_APP_ID_AQUI"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const storage = getStorage(app);
+        const db = getFirestore(app);
+        // =========================================================================
+
+        const btnStart = document.getElementById('btn-start');
+        const cameraSection = document.getElementById('camera-section');
+        const videoFeed = document.getElementById('video-feed');
+        const btnCapture = document.getElementById('btn-capture');
+        const canvas = document.getElementById('canvas');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const statusText = document.getElementById('status-text');
+        const resultSection = document.getElementById('result-section');
+        const draftDisplay = document.getElementById('draft-display');
+        const btnReset = document.getElementById('btn-reset');
+
+        let stream = null;
+
+        btnStart.addEventListener('click', async () => {
+            btnStart.style.display = 'none';
+            cameraSection.style.display = 'flex';
+            
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: 'environment' } 
+                });
+                videoFeed.srcObject = stream;
+            } catch (err) {
+                console.error("Erro ao acessar a câmera: ", err);
+                statusText.innerText = "Erro ao acessar a câmera. Verifique as permissões.";
+            }
+        });
+
+        btnCapture.addEventListener('click', async () => {
+            btnCapture.disabled = true;
+            loadingSpinner.style.display = 'block';
+            statusText.innerText = "Capturando e enviando...";
+
+            canvas.width = videoFeed.videoWidth;
+            canvas.height = videoFeed.videoHeight;
+            const context = canvas.getContext('2d');
+            context.drawImage(videoFeed, 0, 0, canvas.width, canvas.height);
+
+            const transactionId = `leitura_${Date.now()}`;
+
+            canvas.toBlob(async (blob) => {
+                if (!blob) {
+                    statusText.innerText = "Falha ao gerar imagem.";
+                    return;
+                }
+
+                try {
+                    const storageRef = ref(storage, `calados/${transactionId}.jpg`);
+                    await uploadBytes(storageRef, blob);
+                    statusText.innerText = "Imagem enviada! Aguardando processamento...";
+
+                    const docRef = doc(db, "resultados_calado", transactionId);
+                    
+                    const unsubscribe = onSnapshot(docRef, (docSnap) => {
+                        if (docSnap.exists()) {
+                            const data = docSnap.data();
+                            if (data.valor_calado) {
+                                mostrarResultado(data.valor_calado);
+                                unsubscribe(); 
+                            }
+                        }
+                    });
+
+                    setTimeout(() => {
+                        if (cameraSection.style.display !== 'none') {
+                            unsubscribe();
+                            statusText.innerText = "Tempo limite de processamento excedido.";
+                            btnCapture.disabled = false;
+                            loadingSpinner.style.display = 'none';
+                        }
+                    }, 30000);
+
+                } catch (error) {
+                    console.error("Erro no upload ou leitura: ", error);
+                    statusText.innerText = "Erro ao processar. Tente novamente.";
+                    btnCapture.disabled = false;
+                    loadingSpinner.style.display = 'none';
+                }
+            }, 'image/jpeg', 0.9); 
+        });
+
+        function mostrarResultado(valor) {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+            
+            cameraSection.style.display = 'none';
+            resultSection.style.display = 'flex';
+            draftDisplay.innerText = `${valor} m`;
+            
+            btnCapture.disabled = false;
+            loadingSpinner.style.display = 'none';
+            statusText.innerText = "";
+        }
+
+        btnReset.addEventListener('click', () => {
+            resultSection.style.display = 'none';
+            btnStart.style.display = 'block';
+            draftDisplay.innerText = '-- m';
+        });
+
+    </script>
+</body>
+</html>
