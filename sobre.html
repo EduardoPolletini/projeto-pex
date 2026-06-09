@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     
     <style>
-        /* === ESTILIZAÇÃO BASE === */
+        /* === BASE === */
         body {
             background-color: #011a30; 
             color: #ffffff;
@@ -42,7 +42,6 @@
             background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0) 100%);
         }
 
-        /* Botão posicionado à esquerda */
         .btn-voltar {
             background-color: #ffffff;
             color: #011a30;
@@ -56,17 +55,17 @@
             border-radius: 50px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             transition: all 0.3s ease;
-            margin-right: 25px; /* Empurra a logo para a direita */
+            margin-right: 25px;
             display: inline-block;
         }
 
         .btn-voltar:hover {
-            transform: translateX(-3px); /* Animação apontando para a esquerda */
+            transform: translateX(-3px);
             box-shadow: 0 8px 20px rgba(0,0,0,0.4);
             background-color: #f0f0f0;
         }
 
-        /* Formatação da Logo recuperada */
+        /* Formatação da Logo */
         .app-logo {
             height: 55px; 
             width: auto;  
@@ -82,7 +81,7 @@
             text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
-        /* === CORPO PRINCIPAL === */
+        /* === CORPO === */
         main {
             flex: 1;
             display: flex;
@@ -95,7 +94,7 @@
             box-sizing: border-box;
         }
 
-        /* === SEÇÃO DE RESUMO === */
+        /* === RESUMO === */
         .summary-section {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
@@ -110,7 +109,7 @@
         }
 
         .summary-section h1 {
-            color: #ba0901;
+            color: #F24B4B;
             margin-top: 0;
             font-weight: 600;
             letter-spacing: 1px;
@@ -124,7 +123,7 @@
             text-align: justify;
         }
 
-        /* === CARROSSEL DA EQUIPE === */
+        /* === CARROSSEL === */
         .team-section {
             width: 100%;
             position: relative;
@@ -161,10 +160,10 @@
         }
 
         .carousel-btn:hover {
-            background-color: #ba0901;
+            background-color: #F24B4B;
             color: #011a30;
             transform: scale(1.1);
-            border-color: #ba0901;
+            border-color: #F24B4B;
         }
 
         .carousel-track-container {
@@ -216,7 +215,7 @@
             height: 120px;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid #ba0901;
+            border: 3px solid #F24B4B;
             margin-bottom: 15px;
             padding: 3px;
         }
@@ -231,7 +230,7 @@
             margin: 0 0 15px 0;
             font-size: 14px;
             font-weight: 300;
-            color: #ba0901;
+            color: #F24B4B;
             text-transform: uppercase;
         }
 
@@ -242,7 +241,7 @@
             margin: 0;
         }
 
-        /* === SEÇÃO DE CONTATO === */
+        /* === CONTATO === */
         .contact-section {
             width: 100%;
             margin-top: 60px;
@@ -286,14 +285,14 @@
         }
 
         .contact-email {
-            color: #ba0901;
+            color: #F24B4B;
             text-decoration: none;
             font-size: 14px;
             transition: color 0.3s;
         }
 
         .contact-email:hover {
-            color: #ff4d4d;
+            color: #F24B4B;
             text-decoration: underline;
         }
 
@@ -326,10 +325,10 @@
                 letter-spacing: 1px;
             }
             .btn-voltar {
-                margin: 0; /* Centraliza o botão */
+                margin: 0;
                 padding: 8px 20px;
                 font-size: 12px;
-                order: -1; /* Força o botão a ficar no topo do cabeçalho no mobile */
+                order: -1;
             }
             .summary-section {
                 padding: 25px 15px;
@@ -443,7 +442,7 @@
         const contactContainer = document.getElementById('contact-container');
 
         membrosEquipe.forEach(membro => {
-            // Renderiza o card do carrossel
+            // Renderiza o carrossel
             const cardHTML = `
                 <div class="team-card">
                     <img src="${membro.foto}" alt="Foto de ${membro.nome}">
@@ -454,7 +453,7 @@
             `;
             track.innerHTML += cardHTML;
 
-            // Renderiza o card de contato
+            // Renderiza o contato
             const contactHTML = `
                 <div class="contact-card">
                     <span class="contact-name">${membro.nome}</span>
