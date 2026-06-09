@@ -105,6 +105,26 @@
             padding: 20px;
         }
 
+        /* FRASE DE EFEITO DESTAQUE */
+        .slogan {
+            font-size: 20px;
+            font-weight: 300;
+            color: #cccccc;
+            margin-bottom: 35px;
+            letter-spacing: 1.5px;
+            text-align: center;
+            font-style: italic;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        .slogan span {
+            color: #F24B4B;
+            font-weight: 600;
+            font-style: normal;
+        }
+
         button {
             background-color: #ffffff;
             color: #011a30;
@@ -275,6 +295,11 @@
                 padding: 8px 16px;
                 font-size: 11px;
             }
+            .slogan {
+                font-size: 15px;
+                margin-bottom: 25px;
+                padding: 0 10px;
+            }
             main {
                 padding: 15px 10px;
             }
@@ -315,6 +340,10 @@
     </header>
 
     <main>
+        <div class="slogan" id="app-slogan">
+            "Desenvolvido na <span>Amazônia</span>, para a <span>Amazônia</span>."
+        </div>
+
         <button id="btn-start">Registrar Calado</button>
 
         <div id="camera-section">
@@ -364,6 +393,7 @@
         // =========================================================================
 
         const btnStart = document.getElementById('btn-start');
+        const appSlogan = document.getElementById('app-slogan');
         const cameraSection = document.getElementById('camera-section');
         const videoFeed = document.getElementById('video-feed');
         const btnCapture = document.getElementById('btn-capture');
@@ -379,6 +409,7 @@
 
         btnStart.addEventListener('click', async () => {
             btnStart.style.display = 'none';
+            appSlogan.style.display = 'none'; // Oculta o slogan quando abre a câmera
             cameraSection.style.display = 'flex';
             
             try {
@@ -400,6 +431,7 @@
             
             cameraSection.style.display = 'none';
             btnStart.style.display = 'block';
+            appSlogan.style.display = 'block'; // Restaura o slogan ao cancelar
             statusText.innerText = "";
             btnCapture.disabled = false;
             loadingSpinner.style.display = 'none';
@@ -487,7 +519,6 @@
             cameraSection.style.display = 'none';
             resultSection.style.display = 'flex';
             
-            // Lógica de decisão de escala (Metros ou Decímetros)
             const unidade = valor >= 10 ? 'dm' : 'm';
             draftDisplay.innerText = `${valor} ${unidade}`;
             
@@ -500,6 +531,7 @@
         btnReset.addEventListener('click', () => {
             resultSection.style.display = 'none';
             btnStart.style.display = 'block';
+            appSlogan.style.display = 'block'; // Restaura o slogan
             draftDisplay.innerText = '-- m';
         });
 
