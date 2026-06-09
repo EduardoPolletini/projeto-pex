@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     
     <style>
-        /* === ESTILIZAÇÃO E RESPONSIVIDADE === */
+
         body {
             background-color: #011a30; 
             color: #ffffff;
@@ -46,6 +46,7 @@
             width: auto;  
             margin-right: 20px;
             object-fit: contain;
+            border-radius: 15px;
         }
 
         .title {
@@ -189,7 +190,7 @@
         import { getFirestore, collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         // =========================================================================
-        // CONFIGURAÇÕES DO FIREBASE INTEGRADAS
+        // FIREBASE
         // =========================================================================
         const firebaseConfig = {
             apiKey: "AIzaSyCksZLf4pXjUW2dBp9dcnQk6eEImqkFGGE",
@@ -273,7 +274,7 @@
                                 const data = docSnap.data();
                                 console.log("[DEBUG] Dados do documento lido:", data);
                                 
-                                // AQUI ESTÁ A CORREÇÃO: Buscando a chave exata 'menor_leitura'
+                                // Buscando 'menor_leitura'
                                 if (data.menor_leitura !== undefined && data.menor_leitura !== null) {
                                     clearTimeout(timeoutId); 
                                     mostrarResultado(data.menor_leitura);
@@ -311,7 +312,7 @@
             
             cameraSection.style.display = 'none';
             resultSection.style.display = 'flex';
-            draftDisplay.innerText = `${valor} m`;
+            draftDisplay.innerText = `${valor} dm`;
             
             btnCapture.disabled = false;
             loadingSpinner.style.display = 'none';
