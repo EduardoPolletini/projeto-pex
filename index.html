@@ -212,12 +212,57 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.4);
             background-color: #f0f0f0;
         }
+
+        /* === RESPONSIVIDADE PRO MOBILE === */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                padding: 15px;
+                gap: 15px;
+                text-align: center;
+            }
+            .app-logo {
+                margin: 0;
+                height: 50px;
+            }
+            .title {
+                font-size: 16px;
+                letter-spacing: 1px;
+            }
+            .btn-sobre {
+                margin: 0; /* Remove o empurrão para a direita */
+                padding: 8px 20px;
+                font-size: 12px;
+            }
+            main {
+                padding: 15px 10px;
+            }
+            #btn-start {
+                padding: 18px 30px;
+                font-size: 18px;
+                width: 90%;
+                max-width: 320px;
+            }
+            #camera-section, #result-section {
+                width: 95%;
+            }
+            #result-section {
+                padding: 30px 15px;
+            }
+            .draft-value {
+                font-size: 42px;
+            }
+            footer {
+                padding: 15px 10px;
+                font-size: 10px;
+            }
+        }
     </style>
 </head>
 <body>
 
     <header>
-        <img src="LogoProjeto.png" alt="Logo Projeto PEX" class="app-logo">
+        <img src="img/LogoProjeto.png" alt="Logo Projeto PEX" class="app-logo">
         <div class="title">PROJETO PEX - DEMONSTRAÇÃO</div>
 
         <a href="sobre.html" class="btn-sobre">Sobre o Projeto</a>
