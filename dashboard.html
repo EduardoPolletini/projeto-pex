@@ -124,7 +124,7 @@
             margin: 0;
             font-size: 24px;
             font-weight: 600;
-            color: #F24B4B;
+            color: #ffffff;
             letter-spacing: 1px;
         }
 
@@ -224,7 +224,26 @@
             box-sizing: border-box;
         }
 
-        /* === TABELA DE HISTÓRICO === */
+        /* === TABELA DE HISTÓRICO E AVISOS === */
+        .accuracy-warning {
+            font-size: 11px;
+            color: #aaaaaa;
+            padding: 0 25px 15px 25px;
+            line-height: 1.6;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            margin-bottom: 5px;
+        }
+
+        .accuracy-warning a {
+            color: #2196F3;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .accuracy-warning a:hover {
+            text-decoration: underline;
+        }
+
         .table-container {
             padding: 0 20px 20px 20px;
             overflow-x: auto;
@@ -312,12 +331,12 @@
 
     <header>
         <div class="header-brand">
-            <img src="img/LogoProjeto.png" alt="Logo Projeto PEX" class="app-logo" onerror="this.src='https://via.placeholder.com/150x50/ffffff/011a30?text=Logo'">
+            <img src="LogoProjeto.png" alt="Logo Projeto PEX" class="app-logo" onerror="this.src='https://via.placeholder.com/150x50/ffffff/011a30?text=Logo'">
             <div class="title">PROJETO PEX - DEMONSTRAÇÃO</div>
         </div>
         <div class="header-nav">
             <a href="index.html" class="btn-nav">App de Leitura</a>
-            <a href="sobre.html" class="btn-nav">Sobre o Projeto</a>
+            <a href="embarcacoes.html" class="btn-nav">Embarcações</a> <a href="sobre.html" class="btn-nav">Sobre o Projeto</a>
         </div>
     </header>
 
@@ -356,7 +375,12 @@
             </div>
 
             <div class="glass-card accent-blue">
-                <div class="card-header">Últimas Leituras</div>
+                <div class="card-header" style="margin-bottom: 5px;">Últimas Leituras</div>
+                
+                <div class="accuracy-warning">
+                    <strong>Aviso de Acurácia (OCR):</strong> O processamento utiliza a <strong>Cloud Vision API</strong>. A precisão atinge em média <strong>98%-99%</strong> em imagens nítidas, oscilando para <strong>88%-93%</strong> em superfícies com ruído visual (ex: desgaste do casco e reflexo d'água). <a href="https://cloud.google.com/vision/docs" target="_blank">Consulte a documentação</a>.
+                </div>
+
                 <div class="table-container">
                     <table id="history-table">
                         <thead>
@@ -455,14 +479,14 @@
             return { texto: 'Normal', classeBDG: 'bg-normal', classeTXT: 'status-normal', classeCRD: 'accent-green' };
         }
 
-        // --- ESCUTA O BANCO DE DADOS EM TEMPO REAL ---
+        // --- ESCUTA O BANCO DE DADOSL ---
         const leiturasRef = collection(db, "Dispositivos", "D001", "leituras");
         
         onSnapshot(leiturasRef, (snapshot) => {
             let dadosProcessados = [];
             let somaMetros = 0;
 
-            // 1. Coleta e converte os dados
+            // Coleta e converte dados
             snapshot.forEach((doc) => {
                 const data = doc.data();
                 if (data.menor_leitura !== undefined && data.menor_leitura !== null) {
@@ -488,7 +512,7 @@
                 }
             });
 
-            // 2. Ordena os dados cronologicamente
+            // Ordena os dados cronologicamente
             dadosProcessados.sort((a, b) => a.time - b.time);
 
             const total = dadosProcessados.length;
@@ -509,7 +533,7 @@
                 else if (ultimoDado.valor_m >= LIMITE_ATENCAO) elStatusDesc.innerText = `Calado (${ultimoDado.valor_m.toFixed(2)}m) próximo ao limite.`;
                 else elStatusDesc.innerText = `Calado (${ultimoDado.valor_m.toFixed(2)}m) dentro da margem de segurança.`;
 
-                // 3. Atualiza o Gráfico (sempre utilizando os metros calculados)
+                // Atualiza o Gráfico
                 const limiteGrafico = dadosProcessados.slice(-20);
                 draftChart.data.labels = limiteGrafico.map(d => {
                     if(d.time === 0) return "--:--";
@@ -529,7 +553,7 @@
                 }
                 draftChart.update();
 
-                // 4. Atualiza a Tabela de Histórico exibindo a unidade original dinamicamente
+                // Atualiza a Tabela de Histórico exibindo a unidade original
                 tableBody.innerHTML = ''; 
                 
                 const historicoTabela = [...dadosProcessados].slice(-50).reverse();
@@ -543,7 +567,7 @@
 
                     const st = avaliarStatus(item.valor_m);
                     
-                    // Exibe "78 dm", ou "7.8 m" caso seja lido bruto
+                    // Exibe dm ou m
                     const row = `
                         <tr>
                             <td>${horarioStr}</td>
