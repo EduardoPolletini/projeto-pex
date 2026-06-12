@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Embarcações - Projeto PEX</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* === ESTILIZAÇÃO BASE === */
+        body {
+            background-color: #011a30; 
+            color: #ffffff;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='0.5'%3E%3Cpath d='M3 14h18l-3 4H6z'/%3E%3Cpath d='M12 14V6l4 4-4 4'/%3E%3C/svg%3E");
+            background-size: 150px 150px;
+            opacity: 0.03; 
+            z-index: -1;
+            pointer-events: none; 
+        }
+
+        /* === CABEÇALHO === */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; 
+            padding: 20px 30px;
+            background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0) 100%);
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .app-logo {
+            height: 55px; 
+            width: auto;  
+            object-fit: contain;
+            flex-shrink: 0; 
+            border-radius: 10px;
+        }
+
+        .title {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            white-space: nowrap; 
+        }
+
+        .btn-voltar {
+            background-color: #ffffff;
+            color: #011a30;
+            text-decoration: none;
+            padding: 10px 24px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn-voltar:hover {
+            transform: translateX(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            background-color: #f0f0f0;
+        }
+
+        /* === CORPO PRINCIPAL === */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            max-width: 1200px; 
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .page-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 15px;
+        }
+
+        .page-header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+            color: #ffffff;
+            letter-spacing: 1px;
+        }
+
+        .search-bar {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(0, 0, 0, 0.2);
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            outline: none;
+            width: 250px;
+        }
+
+        /* === GRID DE EMBARCAÇÕES === */
+        .vessels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            width: 100%;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: #2196F3;
+            opacity: 0.8;
+        }
+
+        .vessel-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .vessel-stats {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            color: #aaaaaa;
+        }
+
+        .vessel-stats strong {
+            color: #00e676;
+        }
+
+        /* Mini Tabela de Histórico */
+        .history-list {
+            margin-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 15px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .history-list::-webkit-scrollbar { width: 4px; }
+        .history-list::-webkit-scrollbar-track { background: transparent; }
+        .history-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-time { color: #888888; }
+        .history-val { font-weight: 600; color: #ffffff; }
+
+        /* Status */
+        .txt-normal { color: #00e676; }
+        .txt-warning { color: #ff9800; }
+        .txt-danger { color: #f44336; }
+
+        /* === FOOTER === */
+        footer {
+            margin-top: auto; 
+            padding: 20px;
+            text-align: center;
+            background: linear-gradient(0deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 100%);
+            font-size: 12px;
+            color: #888888;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                padding: 15px;
+                gap: 15px;
+                text-align: center;
+            }
+            .header-brand { flex-direction: column; gap: 10px; }
+            .btn-voltar { order: -1; margin: 0; }
+            .page-header { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .search-bar { width: 100%; box-sizing: border-box; }
+            .vessels-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="dashboard.html" class="btn-voltar">← Voltar ao Dashboard</a>
+        <div class="header-brand">
+            <img src="LogoProjeto.png" alt="Logo Projeto PEX" class="app-logo" onerror="this.src='https://via.placeholder.com/150x50/ffffff/011a30?text=Logo'">
+            <div class="title">PROJETO PEX</div>
+        </div>
+    </header>
+
+    <main>
+        <div class="page-header">
+            <h1>Registro de Embarcações</h1>
+            <input type="text" id="search-input" class="search-bar" placeholder="Buscar embarcação...">
+        </div>
+
+        <div class="vessels-grid" id="vessels-container">
+            <p style="color: #aaaaaa; width: 100%; text-align: center;">Carregando histórico...</p>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Faculdade Matias Machline - Projeto PEX</p>
+        <p class="highlight-thanks">Um agradecimento especial ao Professor Dario pelo acompanhamento e orientação na construção deste projeto.</p>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCksZLf4pXjUW2dBp9dcnQk6eEImqkFGGE",
+            authDomain: "aquavision-94b0a.firebaseapp.com",
+            databaseURL: "https://aquavision-94b0a-default-rtdb.firebaseio.com",
+            projectId: "aquavision-94b0a",
+            storageBucket: "aquavision-94b0a.firebasestorage.app",
+            messagingSenderId: "350037089938",
+            appId: "1:350037089938:web:3fb921ccc8f7f07c21d04b",
+            measurementId: "G-TSY2R7R77C"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const vesselsContainer = document.getElementById('vessels-container');
+        const searchInput = document.getElementById('search-input');
+        
+        let vesselsDataMap = new Map(); // Para guardar a estrutura consolidada
+        
+        const LIMITE_ATENCAO = 7.5;
+        const LIMITE_PERIGO = 8.0;
+
+        function avaliarStatusClasse(valorMetros) {
+            if (valorMetros >= LIMITE_PERIGO) return 'txt-danger';
+            if (valorMetros >= LIMITE_ATENCAO) return 'txt-warning';
+            return 'txt-normal';
+        }
+
+        const leiturasRef = collection(db, "Dispositivos", "D001", "leituras");
+        
+        onSnapshot(leiturasRef, (snapshot) => {
+            vesselsDataMap.clear();
+
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                
+                // Só processa se tiver leitura E um nome de embarcação
+                if (data.menor_leitura !== undefined && data.embarcacao && data.embarcacao.trim() !== '') {
+                    
+                    // padronização case insensitive e sem espaços
+                    const nomeOriginal = data.embarcacao.trim();
+                    const nomeNormalizado = nomeOriginal.toUpperCase();
+
+                    const valorBruto = parseFloat(data.menor_leitura);
+                    const unidadeRaw = valorBruto >= 10 ? 'dm' : 'm';
+                    const valorEmMetros = valorBruto >= 10 ? valorBruto / 10 : valorBruto;
+                    
+                    let timestamp = 0;
+                    if (data.file) {
+                        const match = data.file.match(/\d+/); 
+                        if (match) timestamp = parseInt(match[0]);
+                    }
+
+                    const registro = {
+                        raw: valorBruto,
+                        unidade: unidadeRaw,
+                        valor_m: valorEmMetros,
+                        time: timestamp
+                    };
+
+                    // Nome maiúsculo como chave únioca
+                    if (!vesselsDataMap.has(nomeNormalizado)) {
+                        vesselsDataMap.set(nomeNormalizado, {
+                            nomeDisplay: nomeNormalizado,
+                            leituras: []
+                        });
+                    }
+                    
+                    vesselsDataMap.get(nomeNormalizado).leituras.push(registro);
+                }
+            });
+
+            renderVessels();
+        });
+
+        function renderVessels(filtro = '') {
+            vesselsContainer.innerHTML = '';
+            
+            if (vesselsDataMap.size === 0) {
+                vesselsContainer.innerHTML = '<p style="color: #aaaaaa; text-align: center; width: 100%;">Nenhuma embarcação registrada ainda.</p>';
+                return;
+            }
+
+            // Converte o Map para Array para podermos ordenar (ex: alfabeticamente)
+            let arrayEmbarcacoes = Array.from(vesselsDataMap.values());
+            arrayEmbarcacoes.sort((a, b) => a.nomeDisplay.localeCompare(b.nomeDisplay));
+
+            let countExibidos = 0;
+
+            arrayEmbarcacoes.forEach(vessel => {
+                // Aplica o filtro de busca
+                if (filtro && !vessel.nomeDisplay.includes(filtro.toUpperCase())) {
+                    return; 
+                }
+
+                countExibidos++;
+
+                // Ordena leituras da mais recente para a mais antiga
+                vessel.leituras.sort((a, b) => b.time - a.time);
+
+                // Calcula a média em metros
+                const soma = vessel.leituras.reduce((acc, curr) => acc + curr.valor_m, 0);
+                const mediaMetros = soma / vessel.leituras.length;
+
+                // Monta o HTML do Card
+                let cardHTML = `
+                    <div class="glass-card">
+                        <div class="vessel-name">${vessel.nomeDisplay}</div>
+                        <div class="vessel-stats">
+                            <span>Leituras: <strong>${vessel.leituras.length}</strong></span>
+                            <span>Média Calado: <strong>${mediaMetros.toFixed(2)}m</strong></span>
+                        </div>
+                        <div class="history-list">
+                `;
+
+                // Monta a lista interna de histórico desse barco
+                vessel.leituras.forEach(leitura => {
+                    let dataStr = "--/--/---- --:--";
+                    if(leitura.time !== 0) {
+                        const d = new Date(leitura.time);
+                        dataStr = `${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')} ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
+                    }
+                    
+                    const classeCor = avaliarStatusClasse(leitura.valor_m);
+
+                    cardHTML += `
+                        <div class="history-item">
+                            <span class="history-time">${dataStr}</span>
+                            <span class="history-val ${classeCor}">${leitura.raw} ${leitura.unidade} <span style="font-size: 10px; color: #888;">(${leitura.valor_m.toFixed(2)}m)</span></span>
+                        </div>
+                    `;
+                });
+
+                cardHTML += `
+                        </div>
+                    </div>
+                `;
+
+                vesselsContainer.innerHTML += cardHTML;
+            });
+
+            if (countExibidos === 0) {
+                vesselsContainer.innerHTML = '<p style="color: #aaaaaa; text-align: center; width: 100%;">Nenhuma embarcação encontrada com este nome.</p>';
+            }
+        }
+
+        // Lógica de busca em tempo real
+        searchInput.addEventListener('input', (e) => {
+            renderVessels(e.target.value);
+        });
+
+    </script>
+</body>
+</html>
